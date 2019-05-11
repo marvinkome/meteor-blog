@@ -1,5 +1,6 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
+import { Link } from 'react-router-dom'
 
 function handleLogin(e, history) {
     e.preventDefault()
@@ -20,22 +21,29 @@ function handleLogin(e, history) {
 
 function Login({ history }) {
     return (
-        <div className="auth-form">
-            <form className="form-cont" onSubmit={(e) => handleLogin(e, history)}>
-                <div className="field">
-                    <label>Email: </label>
-                    <input type="email" placeholder="Email" id="email" required />
+        <div className="container">
+            <h2>Login Page</h2>
+
+            <form className="col s12" onSubmit={(e) => handleLogin(e, history)}>
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="email" placeholder="Email" id="email" required />
+                        <label htmlFor="email">Email</label>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="password" placeholder="Password" id="password" required />
+                        <label htmlFor="password">Password</label>
+                    </div>
                 </div>
 
-                <div className="field">
-                    <label>Password: </label>
-                    <input type="password" placeholder="Password" id="password" required />
-                </div>
-
-                <button className="submit">Login</button>
+                <button className="waves-effect waves-light btn">Login</button>
             </form>
 
-            <p>Don't have an account? Register</p>
+            <p>
+                Don't have an account? <Link to="/register">Register</Link>
+            </p>
         </div>
     )
 }

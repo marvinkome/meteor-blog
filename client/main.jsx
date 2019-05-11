@@ -5,21 +5,20 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import PrivateRoute from '../imports/ui/components/privateRoute'
 
 import App from '/imports/ui/App'
+
 import Posts from '../imports/ui/routes/posts'
+
 import Register from '../imports/ui/routes/auth/register'
 import Login from '../imports/ui/routes/auth/login'
+
+import CreatePost from '../imports/ui/routes/dashboard/new'
 
 function Main() {
     return (
         <BrowserRouter>
-            <App>
-                <Switch>
-                    <Route exact path="/register" component={Register} />
-                    <Route exact path="/login" component={Login} />
-
-                    <PrivateRoute exact path="/" component={Posts} />
-                </Switch>
-            </App>
+            <Route path="/register" component={Register} />
+            <Route path="/login" component={Login} />
+            <Route exact path="/" component={App} />
         </BrowserRouter>
     )
 }

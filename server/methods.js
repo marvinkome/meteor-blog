@@ -6,16 +6,6 @@ import Posts from '../imports/api/posts'
 
 // TODO::add db methods
 Meteor.methods({
-    'users.checkEmail': function(email) {
-        check(email, String)
-
-        if (Meteor.users.findOne({ email })) {
-            return true
-        } else {
-            return false
-        }
-    },
-
     'users.register': function({ name, ...data }, cb) {
         check(name, String)
         check(data, {

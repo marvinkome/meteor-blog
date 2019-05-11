@@ -10,10 +10,10 @@ function renderEmptyPost() {
     )
 }
 
-function Posts({ posts }) {
+function Posts({ posts, user }) {
     return (
         <div className="posts-page">
-            <h2>All Posts</h2>
+            <h2>All Posts - Welcome {user.profile.name}</h2>
 
             <div className="posts-list">
                 {!posts.length ? renderEmptyPost() : null}

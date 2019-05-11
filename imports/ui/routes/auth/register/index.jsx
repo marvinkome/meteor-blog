@@ -1,5 +1,6 @@
 import React from 'react'
 import { Meteor } from 'meteor/meteor'
+import { Link } from 'react-router-dom'
 
 function handleRegister(e, history) {
     e.preventDefault()
@@ -8,64 +9,66 @@ function handleRegister(e, history) {
     const email = e.target['email'].value
     const password = e.target['password'].value
 
-    // check if email has been taken
-    Meteor.call('users.checkEmail', email, (err, res) => {
-        if (err) {
-            console.error(err)
-            return alert('Error creating account, Please try again')
-        }
-
-        if (res) {
-            return alert('Email already taken, try a new one!')
-        }
-
-        // then create user based on result
-        Meteor.call(
-            'users.register',
-            {
-                name,
-                email,
-                password
-            },
-            (err) => {
-                if (err) {
-                    console.error(err)
-                    return alert('Error creating account, Please try again')
-                }
+    // create user
+    Meteor.call(
+        'users.register',
+        {
+            name,
+            email,
+            password
+        },
+        (err) => {
+            if (err) {
+                console.error(err)
+                return alert('Error creating account, Please try again')
+            } else {
+                // then redirect to home page
+                history.push('/')
             }
-        )
-
-        // then redirect to home page
-        history.push('/')
-    })
+        }
+    )
 }
 
 function Register({ history }) {
     return (
-        <div className="auth-form">
-            <form className="form-cont" onSubmit={(e) => handleRegister(e, history)}>
-                <div className="field">
-                    <label>Name: </label>
-                    <input type="text" placeholder="Name" id="name" required />
+        <div className="container">
+            <h2>Register Page</h2>
+
+            <form className="col s12" onSubmit={(e) => handleRegister(e, history)}>
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="text" placeholder="Name" id="name" required />
+                        <label>Name</label>
+                    </div>
                 </div>
 
-                <div className="field">
-                    <label>Email: </label>
-                    <input type="email" placeholder="Email" id="email" required />
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="email" placeholder="Email" id="email" required />
+                        <label>Email</label>
+                    </div>
                 </div>
 
-                <div className="field">
-                    <label>Password: </label>
-                    <input type="password" placeholder="Password" id="password" required />
+                <div className="row">
+                    <div className="input-field col s6">
+                        <input type="password" placeholder="Password" id="password" required />
+                        <label>Password</label>
+                    </div>
                 </div>
 
-                <div className="field">
-                    <input type="checkbox" id="checkbox" required />
-                    <label>I agree to the Terms and Conditions</label>
-                </div>
+                <p>
+                    <label>
+                        <input className="filled-in" type="checkbox" id="checkbox" required />
+                        <span>I agree to the terms and conditions</span>
+                    </label>
+                </p>
 
-                <button className="submit">Register</button>
+                <button className="waves-effect waves-light btn">Register</button>
             </form>
+
+            <p>
+                Have an account? <Link to="/login">Login</Link>
+            </p>
         </div>
     )
 }
