@@ -1,6 +1,8 @@
 import React from 'react'
+import { Meteor } from 'meteor/meteor'
 import PostApi from '/imports/api/posts'
 import { withTracker } from 'meteor/react-meteor-data'
+import { Link } from 'react-router-dom'
 
 function renderEmptyPost() {
     return (
@@ -10,35 +12,48 @@ function renderEmptyPost() {
     )
 }
 
-function Posts({ posts, user }) {
+function Posts({ posts }) {
     return (
-        <div className="posts-page">
-            <h2>All Posts - Welcome {user.profile.name}</h2>
+        <div className="container posts-page">
+            <h2>All Posts</h2>
 
             <div className="posts-list">
                 {!posts.length ? renderEmptyPost() : null}
 
-                {posts.map((post) => {
-                    return (
-                        <div className="post">
-                            <h3>{post.title}</h3>
-                            <p className="post-details">
-                                <span>by {post.author.username}</span>
-                                <span>on 12/09/2018</span>
-                            </p>
-
-                            <p className="post-content">{post.content}</p>
-
-                            <a href={`/blog/${post._id}`}>Read More</a>
-                        </div>
-                    )
-                })}
+                <div className="row">
+                    {posts.map((post) => {
+                        return (
+                            <div key={post._id} className="col s12 m6">
+                                <div className="card">
+                                    <div className="card-content">
+                                        <span className="card-title">{post.title}</span>
+                                        <p className="post-details">
+                                            <span className="grey-text text-darken-3">
+                                                <b>by</b> {post.author.profile.name}
+                                            </span>
+                                            <span className="grey-text text-darken-3">
+                                                {' '}
+                                                <b>on</b> 12/09/2018
+                                            </span>
+                                        </p>
+                                        <p className="truncate">{post.content}</p>
+                                    </div>
+                                    <div className="card-action">
+                                        <Link to={`/blog/${post._id}`}>Read More</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
             </div>
         </div>
     )
 }
 
 export default withTracker(() => {
+    Meteor.subscribe('posts')
+
     return {
         posts: PostApi.find({}).fetch()
     }

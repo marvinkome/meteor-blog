@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Meteor } from 'meteor/meteor'
 import { withTracker } from 'meteor/react-meteor-data'
+import { Route, Link } from 'react-router-dom'
+
+// routes
+import Posts from './routes/posts'
+import Dashboard from './routes/dashboard'
+import Post from './routes/posts/single'
 
 function logout(e, history) {
     e.preventDefault()
@@ -14,8 +20,8 @@ function logout(e, history) {
     })
 }
 
-function App({ children, currentUser, history }) {
-    const [isAuth] = useState(!!currentUser)
+function App({ history, userId, user }) {
+    const [isAuth] = useState(!!userId)
     useEffect(() => {
         if (!isAuth) {
             history.push('/login')
@@ -27,10 +33,20 @@ function App({ children, currentUser, history }) {
             {/* Header */}
             <nav>
                 <div className="container nav-wrapper">
-                    <a href="#" className="brand-logo">
+                    <Link to="/" className="brand-logo">
                         Blog Website
-                    </a>
+                    </Link>
                     <ul id="nav-mobile" className="right hide-on-med-and-down">
+                        {Roles.userIsInRole(user, ['admin']) && (
+                            <>
+                                <li>
+                                    <Link to="/dashboard/create">Create new post</Link>
+                                </li>
+                                <li>
+                                    <Link to="/dashboard/users">All Users</Link>
+                                </li>
+                            </>
+                        )}
                         <li>
                             <a href="#" onClick={(e) => logout(e, history)}>
                                 Logout
@@ -40,7 +56,11 @@ function App({ children, currentUser, history }) {
                 </div>
             </nav>
 
-            <div className="page-container">{children}</div>
+            <div className="page-container">
+                <Route path="/dashboard" component={Dashboard} />
+                <Route exact path="/" component={Posts} />
+                <Route exact path="/blog/:id" component={Post} />
+            </div>
 
             {/* Footer */}
             <footer className="page-footer">
@@ -53,5 +73,6 @@ function App({ children, currentUser, history }) {
 }
 
 export default withTracker(() => ({
-    currentUser: Meteor.userId()
+    userId: Meteor.userId(),
+    user: Meteor.user()
 }))(App)

@@ -32,5 +32,50 @@ Meteor.methods({
 
         // add user to role
         Roles.addUsersToRoles(id, [role], Roles.GLOBAL_GROUP)
+    },
+
+    'posts.createPost': function(data) {
+        check(data, {
+            title: String,
+            content: String
+        })
+
+        const user = Meteor.users.findOne({ _id: this.userId })
+        const isAdmin = Roles.userIsInRole(user, ['admin'])
+        if (!isAdmin) {
+            throw new Meteor.Error('unauthorized', 'Only admin can create posts')
+        }
+
+        const post = {
+            author: user,
+            date: new Date(),
+            title: data.title,
+            content: data.content
+        }
+
+        return Posts.insert(post)
+    },
+
+    'posts.deletePost': function(id) {
+        check(id, String)
+        const post = Posts.findOne(id)
+        const isAdmin = Roles.userIsInRole(this.userId, ['admin'])
+
+        if (isAdmin && post.author !== this.userId) {
+            Posts.remove(id)
+        } else {
+            throw new Meteor.Error('not-authorized')
+        }
+    },
+
+    'posts.updatePost': function(data) {
+        check(data, {
+            id: String,
+            title: String,
+            content: String
+        })
+
+        const { id, ...rest } = data
+        return Posts.update({ _id: id }, { $set: rest })
     }
 })
